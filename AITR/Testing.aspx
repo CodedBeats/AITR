@@ -11,9 +11,7 @@
         <div>
             <asp:Label ID="lbTitle" runat="server" Text="Welcome to AITR" Font-Size="60" Font-Bold="True" ForeColor="#FF0066" />
             <asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click" />
-            <asp:GridView ID="gvUser" runat="server"
-                OnRowDataBound="gvUser_RowDataBound">
-            </asp:GridView>
+            <asp:GridView ID="gvUser" runat="server" OnRowDataBound="gvUser_RowDataBound"></asp:GridView>
         </div>
     </form>
 </body>

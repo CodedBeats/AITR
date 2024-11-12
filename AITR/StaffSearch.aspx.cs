@@ -13,5 +13,12 @@ namespace AITR
         {
 
         }
+
+
+        // triggeres whenever data is being drawn in connected gridview
+        protected void gvResults_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            // do stuff
+        }
     }
 }

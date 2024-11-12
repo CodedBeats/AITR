@@ -116,6 +116,7 @@
             <div class="menuItems">
                 <a href="Default.aspx" class="menuItem">Home</a>
                 <a href="Register.aspx" class="menuItem">Become a Member</a>
+                <a href="StaffSearch.aspx" class="menuItem">Staff Search</a>
             </div>
 
             <div class="currentUser">
