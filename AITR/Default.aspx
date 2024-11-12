@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Side Menu Example</title>
+    <title>Home</title>
     <style>
         body {
             margin: 0;
@@ -47,6 +47,7 @@
             padding: 15px 0;
             text-decoration: none;
             cursor: pointer;
+            transition: 0.25s;
         }
         .menuItem:hover {
             color: #fff;
@@ -99,6 +100,10 @@
             text-decoration: none;
             font-size: 3em;
             border-radius: 20px;
+            transition: 0.25s;
+        }
+        #bigAssBtn:hover {
+            background-color: #0452b8;
         }
     </style>
 </head>
