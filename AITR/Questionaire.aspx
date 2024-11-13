@@ -91,6 +91,49 @@
             background-color: white;
             padding: 40px;
             box-shadow: 5px 5px 5px #000;
+            min-width: 40%
+        }
+        
+        /* questionaire */
+        .questionaire {
+            display: flex;
+            flex-direction: column;
+        }
+        #questionLabel {
+            font-weight: bold;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+        #questionText {
+            font-size: 3em;
+            margin-bottom: 40px;
+        }
+        .checkboxes {
+            display: flex;
+            overflow: auto;
+        }
+        .checkboxOption {
+            margin-right: 20px;
+            font-size: 2em;
+        }
+        #customAnswerTextBox {
+            font-size: 2em;
+        }
+        #nextQuestionBtn {
+            margin-top: 30px;
+            margin-left: auto;
+            width: 20%;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5em;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            background-color: #2784fe;
+            transition: 0.25s;
+        }
+        #nextQuestionBtn:hover {
+            background-color: #0452b8;
         }
     </style>
 </head>
@@ -120,20 +163,24 @@
         <!-- page content -->
         <div class="pageContainer">
             <div class="fancyFloater">
-                <!-- question number -->
-                <asp:Label id="questionLabel" runat="server" Text="Question Number:"></asp:Label>
+                <div class="questionaire">
+                    <!-- question number -->
+                    <asp:Label id="questionLabel" runat="server" Text="Question Number:"></asp:Label>
     
-                <!-- question text -->
-                <asp:Label id="questionText" runat="server" Text="Question will appear here"></asp:Label>
+                    <!-- question text -->
+                    <asp:Label id="questionText" runat="server" Text="Question will appear here"></asp:Label>
     
-                <!-- generated possible checkbox answers -->
-                <asp:PlaceHolder id="possibleAnswersPlaceholder" runat="server"></asp:PlaceHolder>
+                    <!-- generated possible checkbox answers -->
+                    <div class="checkboxes">
+                        <asp:PlaceHolder id="possibleAnswersPlaceholder" runat="server"></asp:PlaceHolder>
+                    </div>
 
-                <!-- custom input textbox -->
-                <asp:TextBox id="customAnswerTextBox" runat="server" Visible="false" Placeholder="Enter your answer here"></asp:TextBox>
+                    <!-- custom input textbox -->
+                    <asp:TextBox id="customAnswerTextBox" runat="server" Visible="false" Placeholder="Enter your answer here"></asp:TextBox>
     
-                <!-- next question -->
-                <asp:Button id="nextQuestionBtn" runat="server" Text="Next" OnClick="NextQuestionBtn_Click" />
+                    <!-- next question -->
+                    <asp:Button id="nextQuestionBtn" runat="server" Text="Next" OnClick="NextQuestionBtn_Click" />
+                </div>
             </div>
         </div>
     </form>

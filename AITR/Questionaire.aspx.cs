@@ -125,11 +125,17 @@ namespace AITR
             // setup question text
             questionText.Text = question.QuestionText;
 
-            // clear checkboxes (this was weird to figure out)
+            // clear checkboxes and custom input (this was weird to figure out)
             possibleAnswersPlaceholder.Controls.Clear();
+            customAnswerTextBox.Visible = false;
 
+            // check if customAnswer -> show custom answer textbox
+            if (question.CustomAnswer)
+            {
+                customAnswerTextBox.Visible = question.CustomAnswer;
+            }
             // check if question has possible answers
-            if (!string.IsNullOrEmpty(question.PossibleAnswers))
+            else if (!string.IsNullOrEmpty(question.PossibleAnswers))
             {
                 // split possible answers by ,
                 string[] answers = question.PossibleAnswers.Split(',');
@@ -141,17 +147,14 @@ namespace AITR
                     {
                         Text = answer,
                         ID = "chk_" + answer.Trim(),
+                        CssClass = "checkboxOption",
                         AutoPostBack = false  // stack overflow told me to do this :)
                     };
 
                     // add checkboxs to placeholder control
                     possibleAnswersPlaceholder.Controls.Add(checkBox);
-                    possibleAnswersPlaceholder.Controls.Add(new Literal { Text = "<br />" });
                 }
             }
-
-            // if customAnswer -> show custom answer textbox
-            customAnswerTextBox.Visible = question.CustomAnswer;
         }
     }
 }
