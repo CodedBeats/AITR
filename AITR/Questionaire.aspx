@@ -1,10 +1,10 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="AITR.Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Questionaire.aspx.cs" Inherits="AITR.Questionaire" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Home</title>
+    <title>Questionaire</title>
     <style>
         body {
             margin: 0;
@@ -89,26 +89,13 @@
         .fancyFloater {
             border-radius: 20px;
             background-color: white;
-            padding: 80px 40px;
+            padding: 40px;
             box-shadow: 5px 5px 5px #000;
-        }
-        #bigAssBtn {
-            color: white;
-            background-color: #2784fe;
-            padding: 15px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 3em;
-            border-radius: 20px;
-            transition: 0.25s;
-        }
-        #bigAssBtn:hover {
-            background-color: #0452b8;
         }
     </style>
 </head>
 <body>
-    <form id="home" runat="server">
+    <form id="questionaire" runat="server">
         <!-- side menu -->
         <div id="sideMenu">
             <div class="menuTitle">AITR</div>
@@ -129,11 +116,24 @@
                 <span class="dropdownMenuItem">Option 2</span>
             </div>
         </div>
-
+        
         <!-- page content -->
         <div class="pageContainer">
             <div class="fancyFloater">
-                <a href="Questionaire.aspx" id="bigAssBtn">Start Questionaire</a>
+                <!-- question number -->
+                <asp:Label id="questionLabel" runat="server" Text="Question Number:"></asp:Label>
+    
+                <!-- question text -->
+                <asp:Label id="questionText" runat="server" Text="Question will appear here"></asp:Label>
+    
+                <!-- generated possible checkbox answers -->
+                <asp:PlaceHolder id="possibleAnswersPlaceholder" runat="server"></asp:PlaceHolder>
+
+                <!-- custom input textbox -->
+                <asp:TextBox id="customAnswerTextBox" runat="server" Visible="false" Placeholder="Enter your answer here"></asp:TextBox>
+    
+                <!-- next question -->
+                <asp:Button id="nextQuestionBtn" runat="server" Text="Next" OnClick="NextQuestionBtn_Click" />
             </div>
         </div>
     </form>
