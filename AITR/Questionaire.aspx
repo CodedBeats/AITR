@@ -135,6 +135,22 @@
         #nextQuestionBtn:hover {
             background-color: #0452b8;
         }
+        #submitAnswersBtn {
+            margin-top: 30px;
+            margin-left: auto;
+            width: 20%;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5em;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            background-color: #27fe35;
+            transition: 0.25s;
+        }
+        #submitAnswersBtn:hover {
+            background-color: #08a312;
+        }
     </style>
 </head>
 <body>
@@ -180,6 +196,7 @@
     
                     <!-- next question -->
                     <asp:Button id="nextQuestionBtn" runat="server" Text="Next" OnClick="NextQuestionBtn_Click" />
+                    <asp:Button id="submitAnswersBtn" runat="server" Text="Submit" OnClick="SubmitAnswersBtn_Click" />
                 </div>
             </div>
         </div>
