@@ -2,7 +2,7 @@
 
 ## Repository Link and Commit History
 Please refer to the following link for access to the project repository and commit history, which documents each step of the development process and shows the progression towards a functioning prototype:
-[**Repository Link**](https://your-repo-link-here)
+[**Repository Link**](https://github.com/CodedBeats/AITR)
 
 ## Frontend-Only Components
 The following components are primarily for display purposes and do not have full backend integration:
