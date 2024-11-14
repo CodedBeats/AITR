@@ -74,11 +74,11 @@
     <Content Include="Questionaire.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="StaffSearch.aspx" />
-    <Content Include="Testing.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConstants.cs" />
+    <Compile Include="AttendanceRecord.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -110,13 +110,6 @@
     </Compile>
     <Compile Include="StaffSearch.aspx.designer.cs">
       <DependentUpon>StaffSearch.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Testing.aspx.cs">
-      <DependentUpon>Testing.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Testing.aspx.designer.cs">
-      <DependentUpon>Testing.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

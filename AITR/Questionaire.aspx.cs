@@ -22,12 +22,9 @@ namespace AITR
                 // load questions into list
                 List<Question> questionss = LoadQuestions();
 
-                // store questions in session
+                // setup session shiz
                 Session["questions"] = questionss;
-                // init answers list in session
                 Session["respondentAnswers"] = new List<RespondentAnswers>();
-
-                // current question for handling place
                 Session["currentQuestionPosition"] = 1;
 
                 // hide submit btn
@@ -37,7 +34,7 @@ namespace AITR
             // get current question pos and display question
             int currentQuestionPosition = (int)Session["currentQuestionPosition"];
             List<Question> questions = (List<Question>)Session["questions"];
-            var currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentQuestionPosition);
+            var currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentQuestionPosition); // can I use var? is that cheating lol?
             DisplayQuestion(currentQuestion);
         }
 
@@ -53,7 +50,6 @@ namespace AITR
 
 
             Question currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentPosition);
-
             if (currentQuestion != null)
             {
                 // get answer based on the question type
@@ -64,7 +60,6 @@ namespace AITR
 
                 // log checkbox stuff
                 System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
-                System.Diagnostics.Debug.WriteLine($"Number of controls in possibleAnswersPlaceholder: {possibleAnswersPlaceholder.Controls.Count}");
                 foreach (CheckBox cb in possibleAnswersPlaceholder.Controls.OfType<CheckBox>())
                 {
                     System.Diagnostics.Debug.WriteLine($"Checkbox Text: {cb.Text}, Checked: {cb.Checked}");
@@ -73,7 +68,7 @@ namespace AITR
                 // create obj
                 RespondentAnswers answer = new RespondentAnswers
                 {
-                    RespondentID = 1, // replace
+                    RespondentID = (int)Session["respondentID"],
                     QuestionID = currentQuestion.QTN_ID,
                     AnswerValue = userAnswer
                 };
@@ -236,6 +231,7 @@ namespace AITR
             {
                 connection.Open();
 
+                // insert respondentAnswers
                 foreach (var answer in respondentAnswers)
                 {
                     using (SqlCommand cmd = new SqlCommand("INSERT INTO RespondentAnswers (RPT_ID, QTN_ID, RespondentsAnswer) VALUES (@RespondentID, @QuestionID, @RespondentsAnswer)", connection))
@@ -247,6 +243,30 @@ namespace AITR
                         cmd.ExecuteNonQuery();
                     }
                 }
+
+                // insert attendenceRecord
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO AttendanceRecord (userIP, sessionDate) VALUES (@UserIP, @SessionDate)", connection))
+                {
+                    // get user IP address
+                    string userIP = Request.UserHostAddress == "::1" ? "127.0.0.1" : Request.UserHostAddress; // for dev testing since ::1 is boring lol
+
+                    // get current date and time
+                    DateTime sessionDate = DateTime.Now;
+
+                    cmd.Parameters.AddWithValue("@UserIP", userIP);
+                    cmd.Parameters.AddWithValue("@SessionDate", sessionDate);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                // insert respondent
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO Respondent (isMember) VALUES (@IsMember)", connection))
+                {
+                    cmd.Parameters.AddWithValue("@IsMember", false);
+
+                    cmd.ExecuteNonQuery();
+                }
+
                 connection.Close();
             }
 
