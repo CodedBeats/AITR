@@ -22,9 +22,14 @@ namespace AITR
             Session["respondentID"] = newRespondentId;
 
             // debugging
-            System.Diagnostics.Debug.WriteLine($"Assigned Respondent ID: {newRespondentId}");
+            //System.Diagnostics.Debug.WriteLine($"Assigned Respondent ID: {newRespondentId}");
         }
 
+
+        /// <summary>
+        /// generates a unique integer by incrementing the current highest respondentID
+        /// </summary>
+        /// <returns></returns>
         private int GenerateUniqueRespondentId()
         {
             int newRespondentId = 1; // default

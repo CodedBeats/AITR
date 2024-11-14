@@ -13,7 +13,7 @@ The following components are primarily for display purposes and do not have full
 Due to time constraints, the focus was placed on building the core functionality of the questionnaire system. Some areas of the code may lack organization and refinement, as this prototype was aimed at delivering the essential features first. Future iterations will address code organization, optimization, and more robust project structure. Thank you for understanding that this prototype prioritizes functionality over final polish.
 
 ## Database Schema Overview
-The **database schema** has been designed to fulfill all outlined test cases without requiring modification. Below is a breakdown of how key columns in the **Question** table operate, which is essential to understanding the functionality and flow of the questionnaire:
+The **database schema** has been designed to fulfill all outlined test cases without requiring modification. Below is a breakdown of how key columns in the **Question** and **QuestionType** tables operate, which is essential to understanding the functionality and flow of the questionnaire:
 
 - **OrderPos**: This column sets the sequence in which questions are displayed. By adjusting this value, you can control the order of questions in the questionnaire.
 

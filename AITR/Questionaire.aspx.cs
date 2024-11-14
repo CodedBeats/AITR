@@ -39,6 +39,12 @@ namespace AITR
         }
 
 
+        /// <summary>
+        /// Saves answered question to a session list.<br />
+        /// Handles what question to display next dynamically based on respondent's answers.<br />
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void NextQuestionBtn_Click(object sender, EventArgs e)
         {
             // get questions list from session
@@ -119,8 +125,12 @@ namespace AITR
                 submitAnswersBtn.Visible = true;
             }
         }
-        
 
+
+        /// <summary>
+        /// Reads from the DB to join Question and QuestionType tables to get all questions and their question types
+        /// </summary>
+        /// <returns>A list of Question objects</returns>
         private List<Question> LoadQuestions()
         {
             List<Question> questions = new List<Question>();
@@ -178,6 +188,10 @@ namespace AITR
         }
 
 
+        /// <summary>
+        /// Splits possible answers by "," and creates check box answers to be displayed in the UI
+        /// </summary>
+        /// <param name="question"></param>
         private void GeneratePossibleAnswersCheckBoxes(Question question)
         {
             // clear previous checkboxes
@@ -201,6 +215,10 @@ namespace AITR
         }
 
 
+        /// <summary>
+        /// Handles all data to be displayed in the UI along with displaying either checkboxes or textbox depending on the question
+        /// </summary>
+        /// <param name="question"></param>
         private void DisplayQuestion(Question question)
         {
             // setup question #
@@ -229,6 +247,11 @@ namespace AITR
         }
 
 
+        /// <summary>
+        /// Inserts into DB: RespondentAnswers, AttendanceRecord and Respondent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void SubmitAnswersBtn_Click(object sender, EventArgs e)
         {
             // get answers list from session
@@ -292,6 +315,7 @@ namespace AITR
 
             // clear session data + confirmation message
             Session.Remove("respondentAnswers");
+            Session.Remove("currentQuestionPosition");
             questionText.Text = "Thank you! Your responses have been submitted.";
             submitAnswersBtn.Visible = false;
             possibleAnswersPlaceholder.Controls.Clear();
