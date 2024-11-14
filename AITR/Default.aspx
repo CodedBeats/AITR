@@ -67,10 +67,14 @@
             height: 30px;
             margin-right: 10px;
         }
-        #dropdownMenu {
-            display: none;
-            flex-direction: column;
-            margin-top: 10px;
+        #loginBtn {
+            color: #ccc;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        #loginBtn:hover {
+            color: #fff;
         }
 
 
@@ -120,13 +124,8 @@
             </div>
 
             <div class="currentUser">
-                <img class="userImg" src="imgs/king.gif" alt="User Image" />
-                <span>Anonymous ^</span>
-            </div>
-            <!-- dropup menu -->
-            <div id="dropdownMenu">
-                <span class="dropdownMenuItem">Option 1</span>
-                <span class="dropdownMenuItem">Option 2</span>
+                <img class="userImg" src="imgs/user_icon.png" alt="User Image" />
+                <a href="Login.aspx" id="loginBtn">Anonymous ^</a>
             </div>
         </div>
 

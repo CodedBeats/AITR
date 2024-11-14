@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="AITR.Register" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="AITR.Login" %>
 
 <!DOCTYPE html>
 
@@ -98,7 +98,7 @@
         }
         
         /* register form*/
-        #registerForm {
+        #loginForm {
             display: flex;
             flex-direction: column;
         }
@@ -139,7 +139,7 @@
     </style>
 </head>
 <body>
-    <form id="register" runat="server">
+    <form id="login" runat="server">
         <!-- side menu -->
         <div id="sideMenu">
             <div class="menuTitle">AITR</div>
@@ -159,27 +159,17 @@
         <!-- page content -->
         <div class="pageContainer">
             <div class="fancyFloater">
-                <div id="registerForm">
-                    <div class="formTitle">Become a Member</div>
+                <div id="loginForm">
+                    <div class="formTitle">Login</div>
 
                     <div class="formSection">
-                        <asp:Label class="formLabel" runat="server" Text="First Name"></asp:Label>
-                        <asp:TextBox id="fNameInput" class="formInput" runat="server"></asp:TextBox>
+                        <asp:Label class="formLabel" runat="server" Text="Username"></asp:Label>
+                        <asp:TextBox id="usernameInput" class="formInput" runat="server"></asp:TextBox>
                     </div>
                     
                     <div class="formSection">
-                        <asp:Label class="formLabel" runat="server" Text="Last Name"></asp:Label>
-                        <asp:TextBox id="lNameInput" class="formInput" runat="server"></asp:TextBox>
-                    </div>
-                    
-                    <div class="formSection">
-                        <asp:Label class="formLabel" runat="server" Text="Phone Number"></asp:Label>
-                        <asp:TextBox id="phoneNumberInput" class="formInput" runat="server"></asp:TextBox>
-                    </div>
-
-                    <div class="formSection">
-                        <asp:Label class="formLabel" runat="server" Text="Date of Birth"></asp:Label>
-                        <asp:TextBox id="dobInput" class="formInput" runat="server" TextMode="Date"></asp:TextBox>
+                        <asp:Label class="formLabel" runat="server" Text="Password"></asp:Label>
+                        <asp:TextBox id="passwordInput" class="formInput" runat="server"></asp:TextBox>
                     </div>
 
                     <asp:Button id="submitBtn" runat="server" Text="Submit" />
