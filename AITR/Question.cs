@@ -10,7 +10,7 @@ namespace AITR
         // pk
         public int QTN_ID { get; set; }
         // fk
-        public int QTE_ID { get; set; }
+        public string QuestionType { get; set; }
         public string QuestionText { get; set; }
         public string PossibleAnswers { get; set; }
         public bool YesNoQuestion { get; set; } = false;
@@ -27,7 +27,7 @@ namespace AITR
         // constructor with question field properties
         public Question(
             int qtnId, 
-            int qteId, 
+            string qestionType, 
             string questionText, 
             string possibleAnswers, 
             bool yesNoQuestion, 
@@ -38,7 +38,7 @@ namespace AITR
         )
         {
             QTN_ID = qtnId;
-            QTE_ID = qteId;
+            QuestionType = qestionType;
             QuestionText = questionText;
             PossibleAnswers = possibleAnswers;
             YesNoQuestion = yesNoQuestion;

@@ -48,46 +48,60 @@ namespace AITR
             // get current position from session
             int currentPosition = (int)Session["currentQuestionPosition"];
 
-
+            // get the current question based on the position
             Question currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentPosition);
-            if (currentQuestion != null)
+            // get answer based on the question type
+            string userAnswer = currentQuestion.CustomAnswer ? customAnswerTextBox.Text :
+                                string.Join(",", possibleAnswersPlaceholder.Controls.OfType<CheckBox>()
+                                .Where(cb => cb.Checked)
+                                .Select(cb => cb.Text));
+
+            // log checkbox stuff
+            /*
+            System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
+            foreach (CheckBox cb in possibleAnswersPlaceholder.Controls.OfType<CheckBox>())
             {
-                // get answer based on the question type
-                string userAnswer = currentQuestion.CustomAnswer ? customAnswerTextBox.Text :
-                                    string.Join(",", possibleAnswersPlaceholder.Controls.OfType<CheckBox>()
-                                    .Where(cb => cb.Checked)
-                                    .Select(cb => cb.Text));
+                System.Diagnostics.Debug.WriteLine($"Checkbox Text: {cb.Text}, Checked: {cb.Checked}");
+            }
+            */
 
-                // log checkbox stuff
-                System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
-                foreach (CheckBox cb in possibleAnswersPlaceholder.Controls.OfType<CheckBox>())
+            // create answer obj
+            RespondentAnswers answer = new RespondentAnswers
+            {
+                RespondentID = (int)Session["respondentID"],
+                QuestionID = currentQuestion.QTN_ID,
+                AnswerValue = userAnswer
+            };
+
+            // add answer obj to session list
+            var respondentAnswers = Session["respondentAnswers"] as List<RespondentAnswers>;
+            respondentAnswers.Add(answer);
+            Session["respondentAnswers"] = respondentAnswers;
+
+
+            // determine next question pos
+            int nextPosition = currentPosition + 1;
+            if (currentQuestion.YesNoQuestion && userAnswer.ToLower() == "no")
+            {
+                // check if next question is sub question by comparing QuestionType
+                string currentType = currentQuestion.QuestionType;
+                if (nextPosition < questions.Count && questions[nextPosition].QuestionType.StartsWith(currentType + "_"))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Checkbox Text: {cb.Text}, Checked: {cb.Checked}");
+                    nextPosition += 2;  // skip all sub questions if answer was "no"
                 }
-
-                // create obj
-                RespondentAnswers answer = new RespondentAnswers
-                {
-                    RespondentID = (int)Session["respondentID"],
-                    QuestionID = currentQuestion.QTN_ID,
-                    AnswerValue = userAnswer
-                };
-
-                // add obj to session list
-                var respondentAnswers = Session["respondentAnswers"] as List<RespondentAnswers>;
-                respondentAnswers.Add(answer);
-                Session["respondentAnswers"] = respondentAnswers;
+                // skip next question since it's of same type
+                nextPosition++;
             }
 
 
             // get next question
-            var nextQuestion = questions.FirstOrDefault(q => q.OrderPos == currentPosition + 1);
+            var nextQuestion = questions.FirstOrDefault(q => q.OrderPos == nextPosition);
 
             // there is another question
             if (nextQuestion != null)
             {
-                // increment pos and update session
-                Session["currentQuestionPosition"] = currentPosition + 1;
+                // update the current question position in session
+                Session["currentQuestionPosition"] = nextPosition;
                 // next question
                 DisplayQuestion(nextQuestion);
             }
@@ -127,8 +141,12 @@ namespace AITR
             {
                 connection.Open();
 
-                // get all questions
-                string query = "SELECT * FROM Question ORDER BY OrderPos ASC";
+                // get all questions and use inner join to get questionType string
+                string query = @"
+                    SELECT Question.*, QuestionType.QuestionType
+                    FROM Question
+                    INNER JOIN QuestionType ON Question.QTE_ID = QuestionType.QTE_ID
+                    ORDER BY Question.OrderPos ASC";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -138,15 +156,16 @@ namespace AITR
                         Question question = new Question
                         {
                             QTN_ID = Convert.ToInt32(reader["QTN_ID"]),
-                            QTE_ID = Convert.ToInt32(reader["QTE_ID"]),
+                            QuestionType = reader["QuestionType"].ToString(), // i'm fancy
                             QuestionText = reader["Question"].ToString(),
                             PossibleAnswers = reader["PossibleAnswers"].ToString(),
                             YesNoQuestion = Convert.ToBoolean(reader["YesNoQuestion"]),
-                            MaxAnswers = Convert.ToInt32(reader["MaxAnswers"]),
-                            MinAnswers = Convert.ToInt32(reader["MinAnswers"]),
+                            MaxAnswers = reader["MaxAnswers"] != DBNull.Value ? Convert.ToInt32(reader["MaxAnswers"]) : 0,
+                            MinAnswers = reader["MinAnswers"] != DBNull.Value ? Convert.ToInt32(reader["MinAnswers"]) : 0,
                             CustomAnswer = Convert.ToBoolean(reader["CustomAnswer"]),
-                            OrderPos = Convert.ToInt32(reader["OrderPos"])
+                            OrderPos = Convert.ToInt32(reader["OrderPos"]),
                         };
+                        // System.Diagnostics.Debug.WriteLine(question.QuestionType);
 
                         questions.Add(question);
                     }
@@ -196,6 +215,7 @@ namespace AITR
             // check if customAnswer -> show custom answer textbox
             if (question.CustomAnswer)
             {
+                customAnswerTextBox.Text = "";
                 customAnswerTextBox.Visible = question.CustomAnswer;
             }
             // check if question has possible answers
