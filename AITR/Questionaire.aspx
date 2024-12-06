@@ -28,7 +28,8 @@
             background-color: white;
             padding: 40px;
             box-shadow: 5px 5px 5px #000;
-            min-width: 40%
+            min-width: 40%;
+            max-width: 60vw;
         }
         
         /* questionaire */

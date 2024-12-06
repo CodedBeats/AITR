@@ -28,6 +28,7 @@
             background-color: white;
             padding: 80px 40px;
             box-shadow: 5px 5px 5px #000;
+            max-width: 60vw;
         }
         #bigAssBtn {
             color: white;
