@@ -14,20 +14,33 @@ namespace AITR
     public partial class Default : System.Web.UI.Page
     {
 
-        // actions for when page object loads
+        /// <summary>
+        /// Sets up session variables for the rest of the website 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
-            // create unique respondent id and add to session
-            int newRespondentId = GenerateUniqueRespondentId();
-            Session["respondentID"] = newRespondentId;
+            // init session vars only if not already set
+            if (Session["respondentID"] == null)
+            {
+                int newRespondentId = GenerateUniqueRespondentId();
+                Session["respondentID"] = newRespondentId;
+            }
+            if (Session["staffLoggedIn"] == null)
+            {
+                Session["staffLoggedIn"] = false;
+            }
+
 
             // debugging
             //System.Diagnostics.Debug.WriteLine($"Assigned Respondent ID: {newRespondentId}");
+            //System.Diagnostics.Debug.WriteLine($"staff logged in? {Session["staffLoggedIn"]}");
         }
 
 
         /// <summary>
-        /// generates a unique integer by incrementing the current highest respondentID
+        /// Generates a unique integer by incrementing the current highest respondentID
         /// </summary>
         /// <returns></returns>
         private int GenerateUniqueRespondentId()

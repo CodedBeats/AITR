@@ -69,6 +69,14 @@
         #submitBtn:hover {
             background-color: #0452b8;
         }
+
+        /* err msg */
+        #errMsgLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -92,7 +100,8 @@
                         <asp:TextBox id="passwordInput" class="formInput" runat="server"></asp:TextBox>
                     </div>
 
-                    <asp:Button id="submitBtn" runat="server" Text="Submit" />
+                    <asp:Button id="submitBtn" runat="server" Text="Login" OnClick="loginBtn_Click" />
+                    <asp:Label id="errMsgLabel" runat="server" Text=""></asp:Label>
                 </div>
             </div>
         </div>

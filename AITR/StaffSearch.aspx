@@ -142,6 +142,13 @@
         .demoInfo {
             color: red;
         }
+
+        /* err msg */
+        #notLoggedInLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
@@ -152,43 +159,46 @@
         <!-- page content -->
         <div class="pageContainer">
             <div class="fancyFloater">
-                <div class="criteriaContainer">
-                    <div class="criteriaTitle">Add Criteria to refine your search</div>
+                <div id="staffSearchForm" runat="server">
+                    <div class="criteriaContainer">
+                        <div class="criteriaTitle">Add Criteria to refine your search</div>
 
-                    <div class="selectedCriteria">
-                        <div class="criteria">Gender: Female</div>
-                        <div class="criteria">State: VIC</div>
-                        <div class="criteria">Postcode: 3070</div>
-                    </div>
+                        <div class="selectedCriteria">
+                            <div class="criteria">Gender: Female</div>
+                            <div class="criteria">State: VIC</div>
+                            <div class="criteria">Postcode: 3070</div>
+                        </div>
 
-                    <div class="criteriaSelectorContainer">
-                        <div class="criteriaSelectors">
-                            <div class="criteriaSelector">
-                                <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Criteria Field"></asp:Label>
-                                <asp:DropDownList id="criteriaFieldDropdown" runat="server"></asp:DropDownList>
+                        <div class="criteriaSelectorContainer">
+                            <div class="criteriaSelectors">
+                                <div class="criteriaSelector">
+                                    <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Criteria Field"></asp:Label>
+                                    <asp:DropDownList id="criteriaFieldDropdown" runat="server"></asp:DropDownList>
+                                </div>
+                                <div class="criteriaSelector">
+                                    <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Field Value"></asp:Label>
+                                    <asp:DropDownList id="criteriaValueDropdown" runat="server"></asp:DropDownList>
+                                </div>
                             </div>
                             <div class="criteriaSelector">
-                                <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Field Value"></asp:Label>
-                                <asp:DropDownList id="criteriaValueDropdown" runat="server"></asp:DropDownList>
+                                <asp:Button id="addSelectionBtn" runat="server" Text="Add Selection" />
                             </div>
                         </div>
-                        <div class="criteriaSelector">
-                            <asp:Button id="addSelectionBtn" runat="server" Text="Add Selection" />
+
+                        <asp:Button id="submitBtn" runat="server" Text="Search" />
+                    </div>
+
+                    <!-- results in grid view with search criteria applied -->
+                    <div class="resultsContainer">
+                        <div id="resultsPlaceholder">
+                            Hit search to load respondent results based on your selected criteria
+                            <br />
+                            <span class="demoInfo">The filled criteria are just for demonstration</span>
                         </div>
+                        <asp:GridView id="gvResults" runat="server" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
                     </div>
-
-                    <asp:Button id="submitBtn" runat="server" Text="Search" />
                 </div>
-
-                <!-- results in grid view with search criteria applied -->
-                <div class="resultsContainer">
-                    <div id="resultsPlaceholder">
-                        Hit search to load respondent results based on your selected criteria
-                        <br />
-                        <span class="demoInfo">The filled criteria are just for demonstration</span>
-                    </div>
-                    <asp:GridView id="gvResults" runat="server" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
-                </div>
+                <asp:Label id="notLoggedInLabel" runat="server" Text="Please Login to use this page"></asp:Label>
             </div>
         </div>
     </form>
