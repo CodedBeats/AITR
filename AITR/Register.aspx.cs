@@ -105,6 +105,7 @@ namespace AITR
 
                     using (SqlCommand command = new SqlCommand(createMemberQ, connection))
                     {
+                        // parameterised for sql injection protection
                         command.Parameters.AddWithValue("@RPT_ID", respondentId);
                         command.Parameters.AddWithValue("@FirstName", firstName);
                         command.Parameters.AddWithValue("@LastName", lastName);

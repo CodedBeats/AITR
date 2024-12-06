@@ -362,6 +362,7 @@ namespace AITR
                 {
                     using (SqlCommand cmd = new SqlCommand("INSERT INTO RespondentAnswers (RPT_ID, QTN_ID, RespondentsAnswer) VALUES (@RespondentID, @QuestionID, @RespondentsAnswer)", connection))
                     {
+                        // parameterised for sql injection protection
                         cmd.Parameters.AddWithValue("@RespondentID", answer.RespondentID);
                         cmd.Parameters.AddWithValue("@QuestionID", answer.QuestionID);
                         cmd.Parameters.AddWithValue("@RespondentsAnswer", answer.AnswerValue);
@@ -379,6 +380,7 @@ namespace AITR
                     // get current date and time
                     DateTime sessionDate = DateTime.Now;
 
+                    // parameterised for sql injection protection
                     cmd.Parameters.AddWithValue("@UserIP", userIP);
                     cmd.Parameters.AddWithValue("@SessionDate", sessionDate);
 
@@ -398,6 +400,7 @@ namespace AITR
                         // insert respondent
                         using (SqlCommand cmd = new SqlCommand("INSERT INTO Respondent (isMember) VALUES (@IsMember)", connection))
                         {
+                            // parameterised for sql injection protection
                             cmd.Parameters.AddWithValue("@IsMember", false);
 
                             cmd.ExecuteNonQuery();

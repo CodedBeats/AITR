@@ -30,11 +30,6 @@ namespace AITR
             {
                 Session["isRegistered"] = false;
             }
-
-
-            // debugging
-            //System.Diagnostics.Debug.WriteLine($"Assigned Respondent ID: {newRespondentId}");
-            //System.Diagnostics.Debug.WriteLine($"staff logged in? {Session["staffLoggedIn"]}");
         }
 
 

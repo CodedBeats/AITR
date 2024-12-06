@@ -17,7 +17,7 @@ namespace AITR
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //
+            // idk
         }
 
 
@@ -56,7 +56,7 @@ namespace AITR
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // prevent SQL injection with adding params
+                        // parameterised for sql injection protection
                         command.Parameters.AddWithValue("@Username", username);
                         command.Parameters.AddWithValue("@Password", password);
 

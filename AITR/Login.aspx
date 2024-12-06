@@ -97,7 +97,7 @@
                     
                     <div class="formSection">
                         <asp:Label class="formLabel" runat="server" Text="Password"></asp:Label>
-                        <asp:TextBox id="passwordInput" class="formInput" runat="server"></asp:TextBox>
+                        <asp:TextBox id="passwordInput" class="formInput" runat="server" TextMode="Password"></asp:TextBox>
                     </div>
 
                     <asp:Button id="submitBtn" runat="server" Text="Login" OnClick="loginBtn_Click" />

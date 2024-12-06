@@ -108,7 +108,7 @@
                     
                     <div class="formSection">
                         <asp:Label class="formLabel" runat="server" Text="Phone Number"></asp:Label>
-                        <asp:TextBox id="phoneNumberInput" class="formInput" runat="server"></asp:TextBox>
+                        <asp:TextBox id="phoneNumberInput" class="formInput" runat="server" TextMode="Phone"></asp:TextBox>
                     </div>
 
                     <div class="formSection">
