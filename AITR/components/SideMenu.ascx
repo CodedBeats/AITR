@@ -12,7 +12,7 @@
 
     <div class="currentUser">
         <img class="userImg" src="imgs/user_icon.png" alt="User Image" />
-        <a href="Login.aspx" id="loginBtn">Anonymous ^</a>
+        <a href="../Login.aspx" id="loginBtn" class="currentUserBtn" runat="server">Anonymous ></a>
     </div>
 </div>
 
@@ -78,14 +78,14 @@
         margin-right: 10px;
     }
 
-    #loginBtn {
-        color: #ccc;
-        text-decoration: none;
-        cursor: pointer;
-        transition: 0.25s;
+    .currentUserBtn {
+        color: #ccc !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        transition: 0.25s !important;
     }
 
-    #loginBtn:hover {
-        color: #fff;
+    .currentUserBtn:hover {
+        color: #fff !important;
     }
 </style>
