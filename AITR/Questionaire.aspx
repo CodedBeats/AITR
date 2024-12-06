@@ -11,7 +11,6 @@
             margin: 0;
         }
 
-
         /* === page content === */
         .pageContainer {
             overflow: hidden;
@@ -110,6 +109,11 @@
                     <div class="checkboxes">
                         <asp:PlaceHolder id="possibleAnswersPlaceholder" runat="server"></asp:PlaceHolder>
                     </div>
+
+                    <!-- dropdown for selecting answers -->
+                    <asp:DropDownList id="answerDropDown" runat="server" Visible="false">
+                       <asp:ListItem Text="Select an answer" Value="" />
+                    </asp:DropDownList>
 
                     <!-- custom input textbox -->
                     <asp:TextBox id="customAnswerTextBox" runat="server" Visible="false" Placeholder="Enter your answer here"></asp:TextBox>

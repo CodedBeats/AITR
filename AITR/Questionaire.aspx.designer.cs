@@ -60,6 +60,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.PlaceHolder possibleAnswersPlaceholder;
 
         /// <summary>
+        /// answerDropDown control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList answerDropDown;
+
+        /// <summary>
         /// customAnswerTextBox control.
         /// </summary>
         /// <remarks>

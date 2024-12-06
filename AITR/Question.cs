@@ -26,11 +26,11 @@ namespace AITR
 
         // constructor with question field properties
         public Question(
-            int qtnId, 
-            string qestionType, 
-            string questionText, 
-            string possibleAnswers, 
-            bool yesNoQuestion, 
+            int qtnId,
+            string qestionType,
+            string questionText,
+            string possibleAnswers,
+            bool yesNoQuestion,
             int maxAnswers,
             int minAnswers,
             bool customAnswer,

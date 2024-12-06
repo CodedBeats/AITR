@@ -34,9 +34,10 @@ namespace AITR
             // get current question pos and display question
             int currentQuestionPosition = (int)Session["currentQuestionPosition"];
             List<Question> questions = (List<Question>)Session["questions"];
-            var currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentQuestionPosition); // can I use var? is that cheating lol?
+            var currentQuestion = questions.Find(q => q.OrderPos == currentQuestionPosition); // can I use var? is that cheating lol?
             DisplayQuestion(currentQuestion);
         }
+
 
 
         /// <summary>
@@ -55,21 +56,32 @@ namespace AITR
             int currentPosition = (int)Session["currentQuestionPosition"];
 
             // get the current question based on the position
-            Question currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentPosition);
-            // get answer based on the question type
-            string userAnswer = currentQuestion.CustomAnswer ? customAnswerTextBox.Text :
-                                string.Join(",", possibleAnswersPlaceholder.Controls.OfType<CheckBox>()
-                                .Where(cb => cb.Checked)
-                                .Select(cb => cb.Text));
+            Question currentQuestion = questions.Find(q => q.OrderPos == currentPosition);
 
-            // log checkbox stuff
-            /*
-            System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
-            foreach (CheckBox cb in possibleAnswersPlaceholder.Controls.OfType<CheckBox>())
+            // get answer based on the question type
+            string userAnswer = "";
+            if (currentQuestion.CustomAnswer)
             {
-                System.Diagnostics.Debug.WriteLine($"Checkbox Text: {cb.Text}, Checked: {cb.Checked}");
+                // custom answer text
+                userAnswer = customAnswerTextBox.Text;
+                customAnswerTextBox.Text = "";
             }
-            */
+            else if (answerDropDown.Visible)
+            {
+                // selected option from dropdown
+                userAnswer = answerDropDown.SelectedValue;
+                answerDropDown.Items.Clear();
+            }
+            else
+            {
+                // get all answers from checkboxes
+                userAnswer = string.Join(",", possibleAnswersPlaceholder.Controls.OfType<CheckBox>()
+                    .Where(cb => cb.Checked)
+                    .Select(cb => cb.Text));
+            }
+            // log answers
+            System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
+
 
             // create answer obj
             RespondentAnswers answer = new RespondentAnswers
@@ -101,7 +113,7 @@ namespace AITR
 
 
             // get next question
-            var nextQuestion = questions.FirstOrDefault(q => q.OrderPos == nextPosition);
+            var nextQuestion = questions.Find(q => q.OrderPos == nextPosition);
 
             // there is another question
             if (nextQuestion != null)
@@ -121,6 +133,7 @@ namespace AITR
                 possibleAnswersPlaceholder.Controls.Clear();
                 customAnswerTextBox.Visible = false;
                 nextQuestionBtn.Visible = false;
+                answerDropDown.Visible = false;
                 // show submit btn
                 submitAnswersBtn.Visible = true;
             }
@@ -175,7 +188,6 @@ namespace AITR
                             CustomAnswer = Convert.ToBoolean(reader["CustomAnswer"]),
                             OrderPos = Convert.ToInt32(reader["OrderPos"]),
                         };
-                        // System.Diagnostics.Debug.WriteLine(question.QuestionType);
 
                         questions.Add(question);
                     }
@@ -226,21 +238,30 @@ namespace AITR
             // setup question text
             questionText.Text = question.QuestionText;
 
-            // clear checkboxes and custom input (this was weird to figure out)
+            // clear checkboxes and custom input (this was weird to figure out lol)
             possibleAnswersPlaceholder.Controls.Clear();
             customAnswerTextBox.Visible = false;
+            answerDropDown.Visible = false;
 
             // check if customAnswer -> show custom answer textbox
             if (question.CustomAnswer)
             {
-                customAnswerTextBox.Text = "";
-                customAnswerTextBox.Visible = question.CustomAnswer;
+                customAnswerTextBox.Visible = true;
             }
-            // check if question has possible answers
+            // question has possible answers
+            else if (question.PossibleAnswers.Contains("|"))
+            {
+                // answers are seperated by "|" ex: "x|y|z" -> use dropdown 
+                answerDropDown.Visible = true;
+                string[] options = question.PossibleAnswers.Split('|');
+                foreach (var option in options)
+                {
+                    answerDropDown.Items.Add(new ListItem(option, option));
+                }
+            }
             else
             {
-                //show possible answers as checkboxes
-                customAnswerTextBox.Visible = false;
+                // answers are seperated by "," ex: "x,y,z" -> use checkboxes
                 possibleAnswersPlaceholder.Visible = true;
                 GeneratePossibleAnswersCheckBoxes(question);
             }
@@ -333,6 +354,8 @@ namespace AITR
                 */
 
 
+
+
                 connection.Close();
             }
 
@@ -341,6 +364,7 @@ namespace AITR
             Session.Remove("currentQuestionPosition");
             questionText.Text = "Thank you! Your responses have been submitted.";
             submitAnswersBtn.Visible = false;
+            answerDropDown.Visible = false;
             possibleAnswersPlaceholder.Controls.Clear();
         }
 
