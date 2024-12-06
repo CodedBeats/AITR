@@ -12,6 +12,9 @@ namespace AITR
 {
     public partial class Login : System.Web.UI.Page
     {
+        // connection string setup
+        string _myConnectionString = ConfigurationManager.ConnectionStrings["myConnection"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             //
@@ -40,8 +43,6 @@ namespace AITR
 
             try
             {
-                // connection string setup
-                string _myConnectionString = ConfigurationManager.ConnectionStrings["myConnection"].ConnectionString;
                 if (_myConnectionString.Equals("dev"))
                 {
                     _myConnectionString = AppConstants.DevConnectionString;
@@ -76,6 +77,8 @@ namespace AITR
                             ShowErrorMessage("Your username or password are invalid");
                         }
                     }
+
+                    connection.Close();
                 }
             }
             catch (Exception ex)

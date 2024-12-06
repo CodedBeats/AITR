@@ -14,11 +14,6 @@ namespace AITR
     public partial class Default : System.Web.UI.Page
     {
 
-        /// <summary>
-        /// Sets up session variables for the rest of the website 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
             // init session vars only if not already set
@@ -30,6 +25,10 @@ namespace AITR
             if (Session["staffLoggedIn"] == null)
             {
                 Session["staffLoggedIn"] = false;
+            }
+            if (Session["isRegistered"] == null)
+            {
+                Session["isRegistered"] = false;
             }
 
 

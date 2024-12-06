@@ -10,7 +10,6 @@
         body {
             margin: 0;
         }
-
         
         /* === page content === */
         .pageContainer {
@@ -29,6 +28,7 @@
             background-color: white;
             padding: 40px;
             box-shadow: 5px 5px 5px #000;
+            max-width: 60vw;
         }
         
         /* register form*/
@@ -70,6 +70,19 @@
         #submitBtn:hover {
             background-color: #0452b8;
         }
+
+        /* err msg */
+        #errMsgLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+        #notLoggedInLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
@@ -80,7 +93,7 @@
         <!-- page content -->
         <div class="pageContainer">
             <div class="fancyFloater">
-                <div id="registerForm">
+                <div id="registerForm" runat="server">
                     <div class="formTitle">Become a Member</div>
 
                     <div class="formSection">
@@ -103,8 +116,10 @@
                         <asp:TextBox id="dobInput" class="formInput" runat="server" TextMode="Date"></asp:TextBox>
                     </div>
 
-                    <asp:Button id="submitBtn" runat="server" Text="Submit" />
+                    <asp:Button id="submitBtn" runat="server" Text="Submit" OnClick="submitBtn_Click" />
+                    <asp:Label id="errMsgLabel" runat="server" Text=""></asp:Label>
                 </div>
+                <asp:Label id="notLoggedInLabel" runat="server" Text="You are already a member"></asp:Label>
             </div>
         </div>
     </form>
