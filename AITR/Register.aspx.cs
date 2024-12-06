@@ -83,6 +83,7 @@ namespace AITR
                             string updateRespondentQ = "UPDATE Respondent SET isMember = 1 WHERE RPT_ID = @RPT_ID";
                             using (SqlCommand updateRespondentCmd = new SqlCommand(updateRespondentQ, connection))
                             {
+                                // parameterised for sql injection protection
                                 updateRespondentCmd.Parameters.AddWithValue("@RPT_ID", respondentId);
                                 updateRespondentCmd.ExecuteNonQuery();
                             }

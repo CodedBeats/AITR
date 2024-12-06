@@ -360,14 +360,23 @@ namespace AITR
                 // insert respondentAnswers
                 foreach (var answer in respondentAnswers)
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO RespondentAnswers (RPT_ID, QTN_ID, RespondentsAnswer) VALUES (@RespondentID, @QuestionID, @RespondentsAnswer)", connection))
-                    {
-                        // parameterised for sql injection protection
-                        cmd.Parameters.AddWithValue("@RespondentID", answer.RespondentID);
-                        cmd.Parameters.AddWithValue("@QuestionID", answer.QuestionID);
-                        cmd.Parameters.AddWithValue("@RespondentsAnswer", answer.AnswerValue);
+                    // some answer strings may be in the format of "x,y,z" for when multiple answers were given.
+                    // so we do fancy split (works on strings with 1-any number of answers)
+                    var individualAnswers = answer.AnswerValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        cmd.ExecuteNonQuery();
+                    foreach (var individualAnswer in individualAnswers)
+                    {
+                        using (SqlCommand cmd = new SqlCommand(
+                            "INSERT INTO RespondentAnswers (RPT_ID, QTN_ID, RespondentsAnswer) VALUES (@RespondentID, @QuestionID, @RespondentsAnswer)",
+                            connection))
+                        {
+                            // parameterised for sql injection protection
+                            cmd.Parameters.AddWithValue("@RespondentID", answer.RespondentID);
+                            cmd.Parameters.AddWithValue("@QuestionID", answer.QuestionID);
+                            cmd.Parameters.AddWithValue("@RespondentsAnswer", individualAnswer.Trim());
+
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
 
@@ -408,6 +417,7 @@ namespace AITR
                     }
                 }
 
+
                 /*
                  * === TRIVIA ===
                  * You may be wondering why sometimes I put the query in it's own variable and pass it,
@@ -417,8 +427,6 @@ namespace AITR
                  * And while I am using some great source control...I'm scared to break everything hahahahahahah
                  * ❤︎ Happy coding to you today ❤︎
                 */
-
-
 
 
                 connection.Close();
