@@ -48,6 +48,9 @@ namespace AITR
         /// <param name="e"></param>
         protected void NextQuestionBtn_Click(object sender, EventArgs e)
         {
+            // clear error message
+            errMsgLabel.Text = "";
+
             // get questions list from session
             List<Question> questions = Session["questions"] as List<Question>;
             if (questions == null) return;
@@ -58,19 +61,18 @@ namespace AITR
             // get the current question based on the position
             Question currentQuestion = questions.Find(q => q.OrderPos == currentPosition);
 
-            // get answer based on the question type
+
             string userAnswer = "";
+            // get answer based on the question type
             if (currentQuestion.CustomAnswer)
             {
                 // custom answer text
                 userAnswer = customAnswerTextBox.Text;
-                customAnswerTextBox.Text = "";
             }
             else if (answerDropDown.Visible)
             {
                 // selected option from dropdown
                 userAnswer = answerDropDown.SelectedValue;
-                answerDropDown.Items.Clear();
             }
             else
             {
@@ -81,6 +83,21 @@ namespace AITR
             }
             // log answers
             System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
+
+
+
+            // VINDICATION!!!!!! (validation)
+            var (isValid, errorMessage) = ValidateAnswer(userAnswer, currentQuestion);
+
+            // handle error messages
+            if (!isValid)
+            {
+                errMsgLabel.Text = errorMessage;
+                return;
+            }
+
+            customAnswerTextBox.Text = "";
+            answerDropDown.Items.Clear();
 
 
             // create answer obj
@@ -138,6 +155,51 @@ namespace AITR
                 submitAnswersBtn.Visible = true;
             }
         }
+
+
+
+        /// <summary>
+        /// Takes user answer input and validates against all required parameters ouputting if it's valid and giving an error message if needed
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="question"></param>
+        /// <returns></returns>
+        public static (bool isValid, string errorMessage) ValidateAnswer(string input, Question question)
+        {
+            // trim input
+            string trimmedInput = input?.Trim() ?? "";
+
+            // split answers by "," for multi-answers
+            string[] answers = trimmedInput.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // validate yesNoQuestion
+            if (question.YesNoQuestion)
+            {
+                // must answer and only one option
+                if (answers.Length != 1)
+                {
+                    return (false, "Please choose either Yes or No");
+                }
+            }
+            else
+            {
+                // validate minAnswers
+                if (answers.Length < question.MinAnswers)
+                {
+                    return (false, $"At least {question.MinAnswers} answer(s) are required for this question");
+                }
+
+                // validaten maxAnswers
+                if (answers.Length > question.MaxAnswers)
+                {
+                    return (false, $"No more than {question.MaxAnswers} answer(s) are allowed for this question");
+                }
+            }
+
+            // validation success
+            return (true, "");
+        }
+
 
 
         /// <summary>

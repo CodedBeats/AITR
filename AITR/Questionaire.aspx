@@ -88,6 +88,14 @@
         #submitAnswersBtn:hover {
             background-color: #08a312;
         }
+
+        /* err msg */
+        #errMsgLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +129,9 @@
                     <!-- next question -->
                     <asp:Button id="nextQuestionBtn" runat="server" Text="Next" OnClick="NextQuestionBtn_Click" />
                     <asp:Button id="submitAnswersBtn" runat="server" Text="Submit" OnClick="SubmitAnswersBtn_Click" />
+
+                    <!-- error message -->
+                    <asp:Label id="errMsgLabel" runat="server" Text=""></asp:Label>
                 </div>
             </div>
         </div>
