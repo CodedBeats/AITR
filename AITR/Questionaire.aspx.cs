@@ -302,13 +302,36 @@ namespace AITR
                     cmd.ExecuteNonQuery();
                 }
 
-                // insert respondent
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO Respondent (isMember) VALUES (@IsMember)", connection))
+                // check if respondent exists (might already exist from becoming a member)
+                string checkRespondentQ = "SELECT COUNT(*) FROM Respondent WHERE RPT_ID = @RPT_ID";
+                using (SqlCommand checkRespondentCmd = new SqlCommand(checkRespondentQ, connection))
                 {
-                    cmd.Parameters.AddWithValue("@IsMember", false);
+                    checkRespondentCmd.Parameters.AddWithValue("@RPT_ID", Session["respondentID"]);
+                    int count = Convert.ToInt32(checkRespondentCmd.ExecuteScalar());
 
-                    cmd.ExecuteNonQuery();
+                    // respondent !exists -> add respondent
+                    if (count == 0)
+                    {
+                        // insert respondent
+                        using (SqlCommand cmd = new SqlCommand("INSERT INTO Respondent (isMember) VALUES (@IsMember)", connection))
+                        {
+                            cmd.Parameters.AddWithValue("@IsMember", false);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
                 }
+
+                /*
+                 * === TRIVIA ===
+                 * You may be wondering why sometimes I put the query in it's own variable and pass it,
+                 * and sometimes I just put it in straight away.
+                 * Well...
+                 * I coded it one style one day, then switched to a different style a week later.
+                 * And while I am using some great source control...I'm scared to break everything hahahahahahah
+                 * ❤︎ Happy coding to you today ❤︎
+                */
+
 
                 connection.Close();
             }
