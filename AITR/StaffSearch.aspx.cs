@@ -36,7 +36,15 @@ namespace AITR
                 // handle criteria field and value dropdowns
                 if (!IsPostBack)
                 {
-                    PopulateCriteriaFieldDropdown();
+                    try
+                    {
+                        PopulateCriteriaFieldDropdown();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsgLabel.Text = $"Error occurred while loading criteria: {ex.Message}";
+                        errMsgLabel.ForeColor = System.Drawing.Color.Red;
+                    }
                 }
             }
 
@@ -47,25 +55,50 @@ namespace AITR
 
         private void PopulateCriteriaFieldDropdown()
         {
-            // get questions that have possible answers
-            string query = "SELECT QTN_ID, Question, PossibleAnswers FROM Question WHERE QTE_ID = 1 AND CustomAnswer = 0";
+            // get relevant (have possible answers) questions and associated their question type
+            string getQuestionsQ = @"
+                SELECT 
+                    Question.QTN_ID, 
+                    Question.Question, 
+                    Question.PossibleAnswers, 
+                    Question.YesNoQuestion, 
+                    QuestionType.QuestionType
+                FROM Question
+                INNER JOIN QuestionType ON Question.QTE_ID = QuestionType.QTE_ID
+                WHERE Question.CustomAnswer = 0";
 
             using (SqlConnection connection = new SqlConnection(_myConnectionString))
             {
-                SqlCommand command = new SqlCommand(query, connection);
+                SqlCommand getQuestionsCmd = new SqlCommand(getQuestionsQ, connection);
                 connection.Open();
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlDataReader reader = getQuestionsCmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         // get question info
                         int questionId = Convert.ToInt32(reader["QTN_ID"]);
                         string questionText = reader["Question"].ToString();
+                        string questionType = reader["QuestionType"].ToString();
+                        bool isYesNoQuestion = Convert.ToBoolean(reader["YesNoQuestion"]);
                         System.Diagnostics.Debug.WriteLine($"{questionText}");
 
-                        // regex to get UI names
-                        string displayText = System.Text.RegularExpressions.Regex.Match(questionText, @"\b[A-Z]+\b").Value; // i'm fancy
+                        // determine display text for dropdown
+                        string displayText;
+                        if (questionType == "RespondentInfo")
+                        {
+                            // I forgot to add a title or something to Question table in schema so there is no way to differentiate between RespondentInfo questions
+                            // So the work around is to capitalise words in those questions to use some fancy (probably shitty) regex to get those titles for the UI
+                            displayText = System.Text.RegularExpressions.Regex.Match(questionText, @"\b[A-Z]+\b").Value;
+                        }
+                        else if (isYesNoQuestion)
+                        {
+                            displayText = $"Uses {questionType}";
+                        }
+                        else
+                        {
+                            displayText = questionType;
+                        }
 
                         // add item to dropdown
                         criteriaFieldDropdown.Items.Add(new ListItem(displayText, questionId.ToString()));

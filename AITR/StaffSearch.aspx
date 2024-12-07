@@ -127,7 +127,6 @@
 
         /* results */
         .resultsContainer {
-            width: 100%;
             padding: 20px;
             border: 1px solid black;
             border-radius: 10px;
