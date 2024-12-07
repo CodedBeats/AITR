@@ -57,6 +57,9 @@
         #customAnswerTextBox {
             font-size: 2em;
         }
+        #answerDropDown {
+            font-size: 2em;
+        }
         #nextQuestionBtn {
             margin-top: 30px;
             margin-left: auto;

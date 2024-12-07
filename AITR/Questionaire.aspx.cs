@@ -34,7 +34,7 @@ namespace AITR
             // get current question pos and display question
             int currentQuestionPosition = (int)Session["currentQuestionPosition"];
             List<Question> questions = (List<Question>)Session["questions"];
-            var currentQuestion = questions.Find(q => q.OrderPos == currentQuestionPosition); // can I use var? is that cheating lol?
+            var currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentQuestionPosition); // can I use var? is that cheating lol?
             DisplayQuestion(currentQuestion);
         }
 
@@ -59,7 +59,7 @@ namespace AITR
             int currentPosition = (int)Session["currentQuestionPosition"];
 
             // get the current question based on the position
-            Question currentQuestion = questions.Find(q => q.OrderPos == currentPosition);
+            Question currentQuestion = questions.FirstOrDefault(q => q.OrderPos == currentPosition);
 
 
             string userAnswer = "";
@@ -82,7 +82,7 @@ namespace AITR
                     .Select(cb => cb.Text));
             }
             // log answers
-            System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
+            //System.Diagnostics.Debug.WriteLine($"User Answer: {userAnswer}");
 
 
 
@@ -129,8 +129,21 @@ namespace AITR
             }
 
 
-            // get next question
-            var nextQuestion = questions.Find(q => q.OrderPos == nextPosition);
+            // get next valid question
+            Question nextQuestion = null;
+            while (nextPosition < questions.Count)
+            {
+                nextQuestion = questions.FirstOrDefault(q => q.OrderPos == nextPosition);
+
+                // ff valid question is found, break the loop
+                if (nextQuestion != null)
+                {
+                    break;
+                }
+
+                // skip this position and increment position
+                nextPosition++;
+            }
 
             // there is another question
             if (nextQuestion != null)

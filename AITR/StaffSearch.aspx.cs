@@ -462,12 +462,10 @@ namespace AITR
                                     // Handle DoB safely
                                     if (reader["DoB"] == DBNull.Value) // lotssssssssssss of trial and error for this one
                                     {
-                                        System.Diagnostics.Debug.WriteLine("no dob data");
                                         row["DoB"] = "No Data";
                                     }
                                     else
                                     {
-                                        System.Diagnostics.Debug.WriteLine("dob data");
                                         row["DoB"] = Convert.ToDateTime(reader["DoB"]).ToString("dd/MM/yyyy");
                                     }
                                     row["PhoneNumber"] = reader["PhoneNumber"].ToString();
