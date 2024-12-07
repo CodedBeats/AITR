@@ -1,7 +1,7 @@
-# Project Readme
+# AIT Research (AITR)
 
 ## Repository Link and Commit History
-Please refer to the following link for access to the project repository and commit history,.
+Please refer to the following link for access to the project repository and commit history.
 [**Repository Link**](https://github.com/CodedBeats/AITR)
 
 ## Frontend-Only Components
