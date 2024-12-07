@@ -90,6 +90,9 @@ namespace AITR
                 INNER JOIN QuestionType ON Question.QTE_ID = QuestionType.QTE_ID
                 WHERE Question.CustomAnswer = 0";
 
+            // add (disabled) placeholder option
+            criteriaFieldDropdown.Items.Add(new ListItem("-- Select Criteria Field --", "0") { Enabled = false });
+
             using (SqlConnection connection = new SqlConnection(_myConnectionString))
             {
                 SqlCommand getQuestionsCmd = new SqlCommand(getQuestionsQ, connection);
@@ -143,6 +146,8 @@ namespace AITR
         {
             // clear fieldValue dropdown
             criteriaValueDropdown.Items.Clear();
+            // add (disabled) placeholder option
+            criteriaFieldDropdown.Items.Add(new ListItem("-- Select Field Value --", "0") { Enabled = false });
 
             // get selected question
             int selectedQuestionID = int.Parse(criteriaFieldDropdown.SelectedValue);
@@ -185,7 +190,7 @@ namespace AITR
         protected void addSelectionBtn_Click(object sender, EventArgs e)
         {
             // validate valid selections
-            if (criteriaFieldDropdown.SelectedIndex <= 0 || criteriaValueDropdown.SelectedIndex <= 0)
+            if (criteriaFieldDropdown.SelectedValue == "0" || criteriaValueDropdown.SelectedValue == "0")
             {
                 errMsgLabel.Text = "Please select both a criteria field and value.";
                 errMsgLabel.ForeColor = System.Drawing.Color.Red;
@@ -280,7 +285,7 @@ namespace AITR
 
 
 
-        protected void submitBtn_Click(object sender, EventArgs e)
+        protected void searchBtn_Click(object sender, EventArgs e)
         {
             // clear error message
             errMsgLabel.Text = "";

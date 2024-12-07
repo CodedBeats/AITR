@@ -192,7 +192,7 @@
                             </div>
                         </div>
 
-                        <asp:Button id="submitBtn" runat="server" Text="Search" OnClick="submitBtn_Click" />
+                        <asp:Button id="submitBtn" runat="server" Text="Search" OnClick="searchBtn_Click" />
                         <asp:Label id="errMsgLabel" runat="server" Text=""></asp:Label>
                     </div>
 
