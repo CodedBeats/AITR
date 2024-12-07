@@ -128,14 +128,14 @@
             padding: 20px;
             border: 1px solid black;
             border-radius: 10px;
-            background-color: #b5b5b5;
+            background-color: #fff;
         }
         #resultsPlaceholder {
             text-align: center;
             font-size: 1.2em;
         }
         #gvResults {
-            display: none;
+/*            display: none;*/
         }
         .demoInfo {
             color: red;
@@ -206,7 +206,7 @@
                         <div id="resultsPlaceholder">
                             <asp:Label id="gvErrMsgLabel" runat="server" Text="Hit search to load respondent results based on your selected criteria"></asp:Label>
                         </div>
-                        <asp:GridView id="gvResults" runat="server" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
+                        <asp:GridView id="gvResults" runat="server" OnRowDataBound="gvResults_RowDataBound" AutoGenerateColumns="False"></asp:GridView>
                     </div>
                 </div>
                 <asp:Label id="notLoggedInLabel" runat="server" Text="Please Login to use this page"></asp:Label>

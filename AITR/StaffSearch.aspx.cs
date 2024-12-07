@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -189,6 +190,9 @@ namespace AITR
         /// <param name="e"></param>
         protected void addSelectionBtn_Click(object sender, EventArgs e)
         {
+            // clear error message
+            gvErrMsgLabel.Text = "";
+
             // validate valid selections
             if (criteriaFieldDropdown.SelectedValue == "0" || criteriaValueDropdown.SelectedValue == "0")
             {
@@ -232,6 +236,10 @@ namespace AITR
         /// <param name="e"></param>
         protected void clearSelectionBtn_Click(object sender, EventArgs e)
         {
+            // clear error message
+            gvErrMsgLabel.Text = "";
+
+
             selectedCriteriaList.Clear();
             try
             {
@@ -282,9 +290,11 @@ namespace AITR
 
 
 
-
-
-
+        /// <summary>
+        /// Gets all matching respondents with the seleted criteria, then gets relevent respondent data and shows it in a grid view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void searchBtn_Click(object sender, EventArgs e)
         {
             // clear error message
@@ -307,7 +317,7 @@ namespace AITR
                     // list to store matching respondent IDs
                     List<int> matchingRespondentIDs = new List<int>();
 
-                    // Loop each criteria in the selected criteria list
+                    // loop oer criteria in selected criteria list
                     foreach (var criterion in selectedCriteriaList)
                     {
                         // get matching respondent IDs for each criteria
@@ -345,15 +355,103 @@ namespace AITR
                     {
                         gvErrMsgLabel.Text = "No respondents matched the search criteria.";
                         gvErrMsgLabel.ForeColor = System.Drawing.Color.Red;
+                        return;
                     }
-                    else
+
+                    // get relevant question columns for GridView
+                    string getQuestionColumnsQ = @"
+                        SELECT QTN_ID, Question
+                        FROM Question
+                        WHERE QTE_ID = 1";
+
+                    List<string> columnNames = new List<string>();
+                    List<int> questionIds = new List<int>();
+
+                    using (SqlCommand getQuestionColumnsCmd = new SqlCommand(getQuestionColumnsQ, connection))
                     {
-                        foreach (int id in matchingRespondentIDs)
+                        using (SqlDataReader reader = getQuestionColumnsCmd.ExecuteReader())
                         {
-                            // debug - list of matching respondent IDs
-                            System.Diagnostics.Debug.WriteLine($"RPT_ID: {id}");
+                            while (reader.Read())
+                            {
+                                string questionText = reader["Question"].ToString();
+                                string displayText = System.Text.RegularExpressions.Regex.Match(questionText, @"\b[A-Z]+\b").Value;
+
+                                columnNames.Add(displayText);
+                                questionIds.Add(Convert.ToInt32(reader["QTN_ID"]));
+
+                                //System.Diagnostics.Debug.WriteLine($"column name: {displayText}");
+                                //System.Diagnostics.Debug.WriteLine($"question IDs: {questionIds.Count}");
+                            }
                         }
                     }
+
+                    // add columns for GridView
+                    gvResults.Columns.Clear();
+
+                    // custom columns
+                    foreach (string columnName in columnNames)
+                    {
+                        BoundField boundField = new BoundField
+                        {
+                            HeaderText = columnName,
+                            DataField = columnName
+                        };
+                        gvResults.Columns.Add(boundField);
+                    }
+
+                    // prepare data for GridView based on matching respondentIDs
+                    DataTable dataTable = new DataTable();
+
+                    // add columns of relevant respondent  info
+                    foreach (string columnName in columnNames)
+                    {
+                        dataTable.Columns.Add(columnName);
+                    }
+
+                    // get respondent data and their answers
+                    foreach (int matchingRespondentID in matchingRespondentIDs)
+                    {
+                        // add new row for each respondent
+                        DataRow row = dataTable.NewRow();
+
+                        // get answers for this respondent for each question column
+                        foreach (int questionId in questionIds)
+                        {
+                            string getRespondentAnswerQ = @"
+                                SELECT RespondentsAnswer
+                                FROM RespondentAnswers
+                                WHERE RPT_ID = @RespondentID AND QTN_ID = @QuestionID";
+
+                            using (SqlCommand getRespondentAnswerCmd = new SqlCommand(getRespondentAnswerQ, connection))
+                            {
+                                getRespondentAnswerCmd.Parameters.AddWithValue("@RespondentID", matchingRespondentID);
+                                getRespondentAnswerCmd.Parameters.AddWithValue("@QuestionID", questionId);
+
+                                using (SqlDataReader reader = getRespondentAnswerCmd.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        row[columnNames[questionIds.IndexOf(questionId)]] = reader["RespondentsAnswer"].ToString();
+                                    }
+                                    else
+                                    {
+                                        row[columnNames[questionIds.IndexOf(questionId)]] = "No Answer";
+                                    }
+                                }
+                            }
+                        }
+
+
+                        // add row into DataTable
+                        dataTable.Rows.Add(row);
+
+                        // debug
+                        foreach (DataRow dataRow in dataTable.Rows) System.Diagnostics.Debug.WriteLine("Row Data: " + string.Join(", ", dataRow.ItemArray));
+                    }
+
+                    // attach data to UI table
+                    gvResults.DataSource = dataTable;
+                    gvResults.DataBind();
 
                     connection.Close();
                 }
