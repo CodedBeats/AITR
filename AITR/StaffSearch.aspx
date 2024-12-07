@@ -128,14 +128,18 @@
             padding: 20px;
             border: 1px solid black;
             border-radius: 10px;
-            background-color: #fff;
+            background-color: #b5b5b5;
         }
         #resultsPlaceholder {
             text-align: center;
             font-size: 1.2em;
         }
         #gvResults {
-/*            display: none;*/
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            text-align: center;
+            font-size: 1.2em;
         }
         .demoInfo {
             color: red;

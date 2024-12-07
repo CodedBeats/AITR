@@ -268,12 +268,12 @@ namespace AITR
             // clear current selected criteria container
             selectedCriteria.Controls.Clear();
 
-            System.Diagnostics.Debug.WriteLine($"Rendering selected criteria. Current list count: {selectedCriteriaList.Count}");
+            //System.Diagnostics.Debug.WriteLine($"Rendering selected criteria. Current list count: {selectedCriteriaList.Count}");
 
             // add each criteria
             foreach (var criterion in selectedCriteriaList)
             {
-                System.Diagnostics.Debug.WriteLine($"Criterion: QuestionID={criterion.QuestionID}, Value={criterion.CriteriaValue}");
+                //System.Diagnostics.Debug.WriteLine($"Criterion: QuestionID={criterion.QuestionID}, Value={criterion.CriteriaValue}");
 
                 // get question text for display
                 string questionText = criteriaFieldDropdown.Items.FindByValue(criterion.QuestionID.ToString())?.Text;
@@ -385,8 +385,28 @@ namespace AITR
                         }
                     }
 
-                    // add columns for GridView
                     gvResults.Columns.Clear();
+                    
+                    // add columns for GridView
+                    // member columns
+                    BoundField nameField = new BoundField
+                    {
+                        HeaderText = "Name",
+                        DataField = "Name"
+                    };
+                    BoundField dobField = new BoundField
+                    {
+                        HeaderText = "DoB",
+                        DataField = "DoB"
+                    };
+                    BoundField phoneField = new BoundField
+                    {
+                        HeaderText = "PhoneNumber",
+                        DataField = "PhoneNumber"
+                    };
+                    gvResults.Columns.Add(nameField);
+                    gvResults.Columns.Add(dobField);
+                    gvResults.Columns.Add(phoneField);
 
                     // custom columns
                     foreach (string columnName in columnNames)
@@ -399,10 +419,16 @@ namespace AITR
                         gvResults.Columns.Add(boundField);
                     }
 
+
                     // prepare data for GridView based on matching respondentIDs
                     DataTable dataTable = new DataTable();
 
                     // add columns of relevant respondent  info
+                    // member columnds
+                    dataTable.Columns.Add("Name");
+                    dataTable.Columns.Add("DoB");
+                    dataTable.Columns.Add("PhoneNumber");
+                    // custom columns
                     foreach (string columnName in columnNames)
                     {
                         dataTable.Columns.Add(columnName);
@@ -413,6 +439,41 @@ namespace AITR
                     {
                         // add new row for each respondent
                         DataRow row = dataTable.NewRow();
+
+                        // get Name and other details based on isMember status
+                        string getRespondentNameQ = @"
+                            SELECT 
+                                CASE WHEN r.isMember = 1 THEN CONCAT(m.FirstName, ' ', m.LastName) ELSE 'Anonymous' END AS Name,
+                                CASE WHEN r.isMember = 1 THEN m.DoB ELSE NULL END AS DoB,
+                                CASE WHEN r.isMember = 1 THEN m.PhoneNumber ELSE 'No Data' END AS PhoneNumber
+                            FROM Respondent r
+                            LEFT JOIN Member m ON r.RPT_ID = m.RPT_ID
+                            WHERE r.RPT_ID = @RespondentID"; // stack overflow told me to do it this way.....and it works ¯\_(ツ)_/¯
+
+                        using (SqlCommand getRespondentNameCmd = new SqlCommand(getRespondentNameQ, connection))
+                        {
+                            getRespondentNameCmd.Parameters.AddWithValue("@RespondentID", matchingRespondentID);
+
+                            using (SqlDataReader reader = getRespondentNameCmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    row["Name"] = reader["Name"].ToString();
+                                    // Handle DoB safely
+                                    if (reader["DoB"] == DBNull.Value) // lotssssssssssss of trial and error for this one
+                                    {
+                                        System.Diagnostics.Debug.WriteLine("no dob data");
+                                        row["DoB"] = "No Data";
+                                    }
+                                    else
+                                    {
+                                        System.Diagnostics.Debug.WriteLine("dob data");
+                                        row["DoB"] = Convert.ToDateTime(reader["DoB"]).ToString("dd/MM/yyyy");
+                                    }
+                                    row["PhoneNumber"] = reader["PhoneNumber"].ToString();
+                                }
+                            }
+                        }
 
                         // get answers for this respondent for each question column
                         foreach (int questionId in questionIds)
@@ -440,7 +501,6 @@ namespace AITR
                                 }
                             }
                         }
-
 
                         // add row into DataTable
                         dataTable.Rows.Add(row);
