@@ -131,7 +131,7 @@ namespace AITR
 
             // get next valid question
             Question nextQuestion = null;
-            while (nextPosition < questions.Count)
+            while (nextPosition <= questions.Count)
             {
                 nextQuestion = questions.FirstOrDefault(q => q.OrderPos == nextPosition);
 

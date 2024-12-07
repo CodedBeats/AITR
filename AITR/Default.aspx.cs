@@ -39,7 +39,7 @@ namespace AITR
         /// <returns></returns>
         private int GenerateUniqueRespondentId()
         {
-            int newRespondentId = 1; // default
+            int newRespondentId = 0;
 
             try
             {
@@ -60,13 +60,13 @@ namespace AITR
                     connection.Open();
 
                     // get the max RPT_ID from Respondent table
-                    string query = "SELECT ISNULL(MAX(RPT_ID), 0) FROM Respondent";
+                    string query = "SELECT COUNT(RPT_ID) FROM Respondent";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         object result = command.ExecuteScalar();
                         if (result != DBNull.Value && result != null)
                         {
-                            // Increment for unique ID
+                            // increment for unique ID
                             newRespondentId = Convert.ToInt32(result) + 1;
                         }
                     }
