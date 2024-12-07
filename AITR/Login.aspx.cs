@@ -68,7 +68,7 @@ namespace AITR
                             System.Diagnostics.Debug.WriteLine("success");
                             Session["staffLoggedIn"] = true;
                             // route to home
-                            Response.Redirect("Default.aspx");
+                            Response.Redirect("StaffSearch.aspx");
                         }
                         else
                         {

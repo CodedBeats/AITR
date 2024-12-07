@@ -145,6 +145,12 @@
         }
 
         /* err msg */
+        #errMsgLabel {
+            text-align: center;
+            color: red;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
         #notLoggedInLabel {
             text-align: center;
             color: red;
@@ -174,7 +180,12 @@
                             <div class="criteriaSelectors">
                                 <div class="criteriaSelector">
                                     <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Criteria Field"></asp:Label>
-                                    <asp:DropDownList id="criteriaFieldDropdown" runat="server"></asp:DropDownList>
+                                    <asp:DropDownList
+                                        id="criteriaFieldDropdown" 
+                                        runat="server"
+                                        AutoPostBack="True" 
+                                        OnSelectedIndexChanged="criteriaFieldDropdown_SelectedIndexChanged"
+                                    ></asp:DropDownList>
                                 </div>
                                 <div class="criteriaSelector">
                                     <asp:Label class="criteriaSelectorLabel" runat="server" Text="Select Field Value"></asp:Label>
@@ -186,7 +197,8 @@
                             </div>
                         </div>
 
-                        <asp:Button id="submitBtn" runat="server" Text="Search" />
+                        <asp:Button id="submitBtn" runat="server" Text="Search" OnClick="submitBtn_Click" />
+                        <asp:Label id="errMsgLabel" runat="server" Text=""></asp:Label>
                     </div>
 
                     <!-- results in grid view with search criteria applied -->
