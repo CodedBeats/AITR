@@ -87,16 +87,14 @@
             display: flex;
             flex-direction: column;
         }
+        .criteriaActionBtns {
+            display: flex;
+            gap: 20px;
+        }
         .criteriaSelectorLabel {
             font-size: 1.5em;
         }
-        #criteriaFieldDropdown {
-
-        }
-        #criteriaValueDropdown {
-
-        }
-        #addSelectionBtn {
+        .criteriaActionBtn {
             margin-top: 10px;
             font-size: 1.2em;
             color: white;
@@ -107,7 +105,7 @@
             background-color: #49d051;
             transition: 0.25s;
         }
-        #addSelectionBtn:hover {
+        .criteriaActionBtn:hover {
             background-color: #269f2d;
         }
         #submitBtn {
@@ -169,10 +167,7 @@
                     <div class="criteriaContainer">
                         <div class="criteriaTitle">Add Criteria to refine your search</div>
 
-                        <div class="selectedCriteria">
-                            <div class="criteria">Gender: Female</div>
-                            <div class="criteria">State: VIC</div>
-                            <div class="criteria">Postcode: 3070</div>
+                        <div class="selectedCriteria" id="selectedCriteria" runat="server">
                         </div>
 
                         <div class="criteriaSelectorContainer">
@@ -191,8 +186,9 @@
                                     <asp:DropDownList id="criteriaValueDropdown" runat="server"></asp:DropDownList>
                                 </div>
                             </div>
-                            <div class="criteriaSelector">
-                                <asp:Button id="addSelectionBtn" runat="server" Text="Add Selection" />
+                            <div class="criteriaActionBtns">
+                                <asp:Button id="addSelectionBtn" class="criteriaActionBtn" runat="server" Text="Add Selection" OnClick="addSelectionBtn_Click" />
+                                <asp:Button id="clearSelectionBtn" class="criteriaActionBtn" runat="server" Text="Clear Selection" OnClick="clearSelectionBtn_Click" />
                             </div>
                         </div>
 

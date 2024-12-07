@@ -118,6 +118,7 @@
       <DependentUpon>Register.aspx</DependentUpon>
     </Compile>
     <Compile Include="RespondentAnswers.cs" />
+    <Compile Include="SearchCriterion.cs" />
     <Compile Include="StaffSearch.aspx.cs">
       <DependentUpon>StaffSearch.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

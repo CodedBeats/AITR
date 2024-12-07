@@ -46,13 +46,36 @@ namespace AITR
                         errMsgLabel.ForeColor = System.Drawing.Color.Red;
                     }
                 }
+                RenderSelectedCriteria();
             }
-
-            // init list of respondents
-            ///
         }
 
 
+
+        // store selected criteria in session
+        private List<SearchCriterion> selectedCriteriaList
+        {
+            get
+            {
+                var list = Session["selectedCriteriaList"] as List<SearchCriterion>;
+                if (list == null)
+                {
+                    list = new List<SearchCriterion>();
+                    Session["selectedCriteriaList"] = list;
+                }
+                return list;
+            }
+            set
+            {
+                Session["selectedCriteriaList"] = value;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Populate the Criteria Field Dropdown with questions that have possible answers
+        /// </summary>
         private void PopulateCriteriaFieldDropdown()
         {
             // get relevant (have possible answers) questions and associated their question type
@@ -81,7 +104,7 @@ namespace AITR
                         string questionText = reader["Question"].ToString();
                         string questionType = reader["QuestionType"].ToString();
                         bool isYesNoQuestion = Convert.ToBoolean(reader["YesNoQuestion"]);
-                        System.Diagnostics.Debug.WriteLine($"{questionText}");
+                        //System.Diagnostics.Debug.WriteLine($"{questionText}");
 
                         // determine display text for dropdown
                         string displayText;
@@ -110,6 +133,12 @@ namespace AITR
         }
 
 
+
+        /// <summary>
+        /// Populate the Criteria Value Dropdown with the possible answers for the selectd question
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void criteriaFieldDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             // clear fieldValue dropdown
@@ -145,6 +174,108 @@ namespace AITR
                 connection.Close();
             }
         }
+
+
+
+        /// <summary>
+        /// Adds the selected criteria to a session list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void addSelectionBtn_Click(object sender, EventArgs e)
+        {
+            // validate valid selections
+            if (criteriaFieldDropdown.SelectedIndex <= 0 || criteriaValueDropdown.SelectedIndex <= 0)
+            {
+                errMsgLabel.Text = "Please select both a criteria field and value.";
+                errMsgLabel.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // get selected details
+            int questionID = Convert.ToInt32(criteriaFieldDropdown.SelectedValue);
+            string selectedValue = criteriaValueDropdown.SelectedItem.Text;
+
+            // check if critera already added
+            if (selectedCriteriaList.Exists(c => c.QuestionID == questionID && c.CriteriaValue == selectedValue))
+            {
+                errMsgLabel.Text = "This criterion is already added.";
+                errMsgLabel.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // add criterion to list
+            selectedCriteriaList.Add(new SearchCriterion
+            {
+                QuestionID = questionID,
+                CriteriaValue = selectedValue
+            });
+
+            // ppdate selectedCriteria div
+            RenderSelectedCriteria();
+
+            // clear error message
+            errMsgLabel.Text = "";
+        }
+
+
+
+        /// <summary>
+        /// Clears the selected criteria from the UI and session list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void clearSelectionBtn_Click(object sender, EventArgs e)
+        {
+            selectedCriteriaList.Clear();
+            try
+            {
+                // clear session list
+                selectedCriteriaList.Clear();
+                Session["selectedCriteriaList"] = null;
+
+                // clear UI container
+                selectedCriteria.Controls.Clear();
+            }
+            catch (Exception ex)
+            {
+                // handle error message
+                errMsgLabel.Text = $"Error occurred while clearing criteria: {ex.Message}";
+                errMsgLabel.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Adds selected criteria to the UI
+        /// </summary>
+        private void RenderSelectedCriteria()
+        {
+            // clear current selected criteria container
+            selectedCriteria.Controls.Clear();
+
+            System.Diagnostics.Debug.WriteLine($"Rendering selected criteria. Current list count: {selectedCriteriaList.Count}");
+
+            // add each criteria
+            foreach (var criterion in selectedCriteriaList)
+            {
+                System.Diagnostics.Debug.WriteLine($"Criterion: QuestionID={criterion.QuestionID}, Value={criterion.CriteriaValue}");
+
+                // get question text for display
+                string questionText = criteriaFieldDropdown.Items.FindByValue(criterion.QuestionID.ToString())?.Text;
+
+                // add new literal control for display
+                Literal criteriaItem = new Literal
+                {
+                    Text = $"<div class='criteria'>{questionText}: {criterion.CriteriaValue}</div>"
+                };
+
+                selectedCriteria.Controls.Add(criteriaItem);
+            }
+        }
+
+
 
 
 

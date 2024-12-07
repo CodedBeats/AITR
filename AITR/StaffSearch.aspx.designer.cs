@@ -42,6 +42,15 @@ namespace AITR
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl staffSearchForm;
 
         /// <summary>
+        /// selectedCriteria control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl selectedCriteria;
+
+        /// <summary>
         /// criteriaFieldDropdown control.
         /// </summary>
         /// <remarks>
@@ -67,6 +76,15 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button addSelectionBtn;
+
+        /// <summary>
+        /// clearSelectionBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button clearSelectionBtn;
 
         /// <summary>
         /// submitBtn control.
