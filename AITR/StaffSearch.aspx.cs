@@ -288,7 +288,7 @@ namespace AITR
         protected void searchBtn_Click(object sender, EventArgs e)
         {
             // clear error message
-            errMsgLabel.Text = "";
+            gvErrMsgLabel.Text = "";
 
             try
             {
@@ -296,24 +296,63 @@ namespace AITR
                 {
                     connection.Open();
 
-                    // get all respondent IDs
-                    string getAllRespondentsQ = "SELECT * FROM Respondent";
-                    SqlCommand getAllRespondentsCmd = new SqlCommand(getAllRespondentsQ, connection);
-                    // execute statement to get data
-                    SqlDataReader reader = getAllRespondentsCmd.ExecuteReader();
-
-                    // check for no respondents
-                    if (!reader.HasRows)
+                    // check for selected criteria to search by
+                    if (selectedCriteriaList.Count == 0)
                     {
-                        // output message
-                        errMsgLabel.Text = $"There are no respondents";
-                        errMsgLabel.ForeColor = System.Drawing.Color.Red;
+                        gvErrMsgLabel.Text = "Please add at least one search criteria";
+                        gvErrMsgLabel.ForeColor = System.Drawing.Color.Red;
                         return;
                     }
-                    while (reader.Read())
+
+                    // list to store matching respondent IDs
+                    List<int> matchingRespondentIDs = new List<int>();
+
+                    // Loop each criteria in the selected criteria list
+                    foreach (var criterion in selectedCriteriaList)
                     {
-                        // log respondent
-                        System.Diagnostics.Debug.WriteLine($"ID: {reader["RPT_ID"]} \n isMember: {reader["isMember"]}");
+                        // get matching respondent IDs for each criteria
+                        string getMatchingRespondentsQ = @"
+                            SELECT DISTINCT RPT_ID
+                            FROM RespondentAnswers
+                            WHERE QTN_ID = @QuestionId AND RespondentsAnswer = @CriteriaValue";
+
+                        using (SqlCommand getMatchingRespondentsCmd = new SqlCommand(getMatchingRespondentsQ, connection))
+                        {
+                            getMatchingRespondentsCmd.Parameters.AddWithValue("@QuestionId", criterion.QuestionID);
+                            getMatchingRespondentsCmd.Parameters.AddWithValue("@CriteriaValue", criterion.CriteriaValue);
+
+                            using (SqlDataReader reader = getMatchingRespondentsCmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int respondentId = Convert.ToInt32(reader["RPT_ID"]);
+
+                                    // add to list if not there
+                                    if (!matchingRespondentIDs.Contains(respondentId))
+                                    {
+                                        matchingRespondentIDs.Add(respondentId);
+                                    }
+
+                                    // debug
+                                    //System.Diagnostics.Debug.WriteLine($"Matching RPT_ID: {respondentId}");
+                                }
+                            }
+                        }
+                    }
+
+                    // check if no respondents matched
+                    if (matchingRespondentIDs.Count == 0)
+                    {
+                        gvErrMsgLabel.Text = "No respondents matched the search criteria.";
+                        gvErrMsgLabel.ForeColor = System.Drawing.Color.Red;
+                    }
+                    else
+                    {
+                        foreach (int id in matchingRespondentIDs)
+                        {
+                            // debug - list of matching respondent IDs
+                            System.Diagnostics.Debug.WriteLine($"RPT_ID: {id}");
+                        }
                     }
 
                     connection.Close();
@@ -321,8 +360,8 @@ namespace AITR
             }
             catch (Exception ex)
             {
-                errMsgLabel.Text = $"Error occurred: {ex.Message}";
-                errMsgLabel.ForeColor = System.Drawing.Color.Red;
+                gvErrMsgLabel.Text = $"Error occurred: {ex.Message}";
+                gvErrMsgLabel.ForeColor = System.Drawing.Color.Red;
             }
         }
 

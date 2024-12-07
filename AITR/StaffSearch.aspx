@@ -148,6 +148,11 @@
             font-size: 1.5em;
             margin-top: 10px;
         }
+        #gvErrMsgLabel {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
         #notLoggedInLabel {
             text-align: center;
             color: red;
@@ -199,9 +204,7 @@
                     <!-- results in grid view with search criteria applied -->
                     <div class="resultsContainer">
                         <div id="resultsPlaceholder">
-                            Hit search to load respondent results based on your selected criteria
-                            <br />
-                            <span class="demoInfo">The filled criteria are just for demonstration</span>
+                            <asp:Label id="gvErrMsgLabel" runat="server" Text="Hit search to load respondent results based on your selected criteria"></asp:Label>
                         </div>
                         <asp:GridView id="gvResults" runat="server" OnRowDataBound="gvResults_RowDataBound"></asp:GridView>
                     </div>
