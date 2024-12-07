@@ -315,11 +315,14 @@ namespace AITR
                     }
 
                     // list to store matching respondent IDs
-                    List<int> matchingRespondentIDs = new List<int>();
+                    List<List<int>> matchingRespondentIDs = new List<List<int>>();
 
                     // loop oer criteria in selected criteria list
                     foreach (var criterion in selectedCriteriaList)
                     {
+                        // list to store all IDs for this criteria
+                        List<int> matchingRespondentCriteriaIDs = new List<int>();
+
                         // get matching respondent IDs for each criteria
                         string getMatchingRespondentsQ = @"
                             SELECT DISTINCT RPT_ID
@@ -336,22 +339,26 @@ namespace AITR
                                 while (reader.Read())
                                 {
                                     int respondentId = Convert.ToInt32(reader["RPT_ID"]);
-
-                                    // add to list if not there
-                                    if (!matchingRespondentIDs.Contains(respondentId))
-                                    {
-                                        matchingRespondentIDs.Add(respondentId);
-                                    }
+                                    matchingRespondentCriteriaIDs.Add(respondentId);
 
                                     // debug
                                     //System.Diagnostics.Debug.WriteLine($"Matching RPT_ID: {respondentId}");
                                 }
                             }
                         }
+
+                        // Add the matching IDs for this criterion to the main list
+                        matchingRespondentIDs.Add(matchingRespondentCriteriaIDs);
                     }
 
+                    // intersection to find IDs that match all criteria (much pain to find how to do this in && style instead of || style. can see in commits)
+                    List<int> finalMatchingRespondentIDs = matchingRespondentIDs.Aggregate((previousList, nextList) => previousList.Intersect(nextList).ToList());
+
+                    // debug
+                    foreach (var id in finalMatchingRespondentIDs) System.Diagnostics.Debug.WriteLine($"Final Matching RPT_ID: {id}");
+
                     // check if no respondents matched
-                    if (matchingRespondentIDs.Count == 0)
+                    if (finalMatchingRespondentIDs.Count == 0)
                     {
                         gvErrMsgLabel.Text = "No respondents matched the search criteria.";
                         gvErrMsgLabel.ForeColor = System.Drawing.Color.Red;
@@ -435,7 +442,7 @@ namespace AITR
                     }
 
                     // get respondent data and their answers
-                    foreach (int matchingRespondentID in matchingRespondentIDs)
+                    foreach (int matchingRespondentID in finalMatchingRespondentIDs)
                     {
                         // add new row for each respondent
                         DataRow row = dataTable.NewRow();
