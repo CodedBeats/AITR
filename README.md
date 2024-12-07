@@ -22,4 +22,4 @@ I know front end style gives no marks, but I hope you enjoy it nonetheless.
 
 ---
 
-I hope you have a nice day.
+❤︎ Happy Coding ❤︎
